@@ -1,11 +1,11 @@
-import { ManagerMongoDB  } from "../../../db/gestorMongoDB.js";
+import { ManagerMongoDB } from "../db/MongoDBManager.js"
 import { Schema } from "mongoose";
 
 
 const url = process.env.URLMONGODB
 
 
-const messageSchema = new Schema ({
+const productSchema = new Schema ({
     nombre: String,
     email: {
         type: String,
@@ -21,4 +21,3 @@ export class ManagerMessageMongoDB extends ManagerMongoDB {
   }
 
 }
-

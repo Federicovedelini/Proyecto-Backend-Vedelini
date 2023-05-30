@@ -1,11 +1,11 @@
-import { ManagerMongoDB } from "../../../db/gestorMongoDB.js";
+import { ManagerMongoDB } from "../../../db/MongoDBManage.js";
 import { Schema } from "mongoose";
 
 
 const url = ""
 
 const messageSchema = new Schema ({
-    nombre: String,
+    name: String,
     marca: String,
     precio: Number,
     stock: Number,
