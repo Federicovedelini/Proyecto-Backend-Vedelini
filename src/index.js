@@ -6,7 +6,9 @@ import { Server } from 'socket.io'
 
 
 const app = express()
-const managerMessage = new getManagerMessages()
+
+const manager = await getManagerMessages();
+const managerMessage = new manager.ManagerMessageMongoDB()
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))

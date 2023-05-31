@@ -1,7 +1,7 @@
 const selectedDB = process.env.DBSELECTION 
 
 export const getManagerMessages = async () => {
-    const modelMessage = selectedDB === 1 ? await import 
+    const modelMessage = selectedDB == 1 ? await import 
     ('./MongoDB/models/Message.js') :
     await import('./Postgresql/models/Message.js')
     return modelMessage
