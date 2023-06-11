@@ -1,4 +1,4 @@
-import { ManagerMongoDB } from "../db/MongoDBManager.js"
+import { ManagerMongoDB } from "../db/mongoDBManager"
 import { Schema } from "mongoose";
 
 
