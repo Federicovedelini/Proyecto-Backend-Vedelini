@@ -5,8 +5,9 @@ import { getManagerMessages }  from './dao/daoManager.js'
 import { Server } from 'socket.io'
 import mongoose from 'mongoose';
 import orderModel from './models/order.js'
-
-
+import 'dotenv/config'
+import cookieParser from 'cookie-parser'
+import session from 'express-session'
 
 
 const app = express()
@@ -14,13 +15,43 @@ const app = express()
 const manager = await getManagerMessages();
 const managerMessage = new manager.ManagerMessageMongoDB()
 
+
+
+//PORT
+
+
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
+app.use(cookieParser(process.env.COOKIE_SECRET))
+app.use(session({
+   secret: process.env.SESSION_SECRET,
+   resave: true,
+   
+}))
+
+
+
+
+//COOKIES
+app.get('/setCookie', (req,res) => {
+   res.cookie('Cookie 1', "Creando primer cookieee", 
+   { maxAge:50000, signed: true }).send('Cookie2')
+})
+
+app.get('/getCookie', (req,res) => {
+   res.send(req.signedCookies)
+})
+
+
+
+
 
 app.set("port", process .env.PORT || 8080 )
 
 const server = app.listen(app.get("port"), () => console.log(`Server on port ${app.get("port")}`))
 const io = new Server(server)
+
+
 
 io.on("connection",  (socket) => {
    socket.on("message", (info) => {
@@ -36,7 +67,10 @@ io.on("connection",  (socket) => {
 
 })
 
-const main = async () => {
+
+//PRODUCTOS
+
+/*const main = async () => {
    await mongoose.connect("mongodb+srv://Fede:42906980@cluster0.oqovw7a.mongodb.net/?retryWrites=true&w=majority")
 
    const resultados = await orderModel.paginate({category: ""}, {size: "medium"}, {limit: 4, page: 1 })
@@ -79,8 +113,11 @@ const main = async () => {
    
  
  
-   */
+   
  }
  
  
  main()
+
+ */
+
