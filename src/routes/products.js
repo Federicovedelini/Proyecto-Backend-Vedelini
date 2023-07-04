@@ -1,23 +1,13 @@
-import { ManagerMongoDB } from "../db/mongoDBManager"
-import { Schema } from "mongoose";
+import { Router } from "express";
+import { getManagerProducts, getProduct, createProduct, updateProduct, deleteProduct } from "../dao/daoManager.js";
+
+const routerProducto = Router()
+
+routerProducto.get("/", getProducts)
+routerProducto.get("/:id", getProduct)
+routerProducto.post("/", createProduct)
+routerProducto.put("/:id", updateProduct)
+routerProducto.delete("/:id", deleteProduct)
 
 
-const url = process.env.URLMONGODB
-
-
-const productSchema = new Schema ({
-    nombre: String,
-    email: {
-        type: String,
-        unique: true
-    },
-    message: String
-})
-
-
-export class ManagerMessageMongoDB extends ManagerMongoDB {
-    constructor(){
-        super(url, "messages", messageSchema)
-  }
-
-}
+export default routerProducto

@@ -1,25 +1,59 @@
-import { ManagerMongoDB } from "../../../db/MongoDBManage.js";
+import { ManagerMongoDB } from "../../../db/mongoDBManager.js";
 import { Schema } from "mongoose";
+import paginate from "mongoose-paginate-v2"
 
 
 const url = ""
 
-const messageSchema = new Schema ({
-    name: String,
-    marca: String,
-    precio: Number,
-    stock: Number,
-    email: {
+const productSchema = new Schema ({
+    title: {
         type: String,
+        required: true
+    },
+    description: {
+        type: String,
+        required: true
+    },
+    code: {
+        type: String,
+        required: true,
         unique: true
     },
-    message: String
+    price: {
+        type: Number,
+        required: true,
+        index: true
+    },
+    status: {
+        type: Boolean,
+        default: true
+    },
+   stock: {
+        type: Number,
+        required: true
+    },
+    category: {
+        type: String,
+        required: true,
+        index:true
+    },
+   thumbnails: []
 })
 
+productSchema.plugin(paginate)
 
-export class ManagerMessageMongoDB extends ManagerMongoDB {
-    constructor(){
-        super(url, "messages", messageSchema)
-  }
 
+export class ManagerProductMongoDB  extends ManagerMongoDB {
+    constructor() {
+        super(process.env.URLMONGODB, "products", productSchema)
+    }
+
+    async getProducts(limit, page, filter, ord) {
+        super.setConnection()
+        
+        const productos = await this.model.paginate({ filter: filter }, {
+            limit: limit, page: page, sort:{ price: ord }})
+
+            return productos
+    }
 }
