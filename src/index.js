@@ -10,7 +10,14 @@ import cookieParser from 'cookie-parser'
 import session from 'express-session'
 import multer from 'multer'
 import { engine } from 'express-handlebars'
-import { MongoStore } from 'connect-mongo'
+import { __dirname } from './path.js'
+import * as path from 'path'
+import { fileURLToPath } from 'url'
+import routerProducto from './routes/products.js'
+import routerUser from './routes/user.js'
+import routerCart from './routes/cart.js'
+import MongoStore from 'connect-mongo'
+
 
 
 
@@ -25,6 +32,8 @@ const managerMessage = new manager.ManagerMessageMongoDB()
 
 
 
+
+
 //PORT
 
 
@@ -34,15 +43,23 @@ app.use(cookieParser(process.env.COOKIE_SECRET))
 app.use(session({
    store: MongoStore.create({
       mongoUrl: process.env.URLMONGODB,
-      mongoOptions:{useNewUrlParser: true, useUnifiedTopology: true},
-      ttl: 35
+      mongoOptions: {useNewUrlParser: true, useUnifiedTopology: true },
+      ttl: 30
    }),
-
    secret: process.env.SESSION_SECRET,
    resave: true, //permite refrescar la pagina y quede activa
    saveUninitialized: true // Guarda sesion ainque no tenga informacion
 
 }))
+
+app.engine("handlebars", engine())
+app.set("view engine", "handlebars")
+app.set("views", path.resolve(__dirname, "/.views"))
+
+
+
+
+
 
 //Rutas Session
 
@@ -65,13 +82,27 @@ app.set("port", process .env.PORT || 8080 )
 const server = app.listen(app.get("port"), () => console.log(`Server on port ${app.get("port")}`))
 const io = new Server(server)
 
-const claseDao = async (info) => {
-   const data = await getManagerMessages()
-   const managerMessage = new data.ManagerMessageMongoDB
-   await managerMessage.addElements([info])
-   const mensajes = await managerMessage.getElements()
-   return mensajes
-}
+const storage = multer.diskStorage({
+   destination: (req, file, cb) => {
+      cb(null, `${Date.now()}${file.originalname}`)
+   }
+})
+
+const upload = multer ({ storage: storage })
+
+
+
+
+//RUTAS
+app.use('/product', routerProducto)
+app.use('/user/', routerUser)
+app.use('/api/cart', routerCart)
+
+
+
+
+
+
 
 
 io.on("connection",  (socket) => {
@@ -143,6 +174,14 @@ io.on("connection",  (socket) => {
  
 
 */
+
+const claseDao = async (info) => {
+   const data = await getManagerMessages()
+   const managerMessage = new data.ManagerMessageMongoDB
+   await managerMessage.addElements([info])
+   const mensajes = await managerMessage.getElements()
+   return mensajes
+}
 
 //LOGUEO
 

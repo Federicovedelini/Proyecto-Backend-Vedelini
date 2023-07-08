@@ -14,3 +14,4 @@ export const getManagerProducts = async () => {
     return modelProduct
 }
 
+export default createProduct

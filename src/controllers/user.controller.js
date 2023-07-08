@@ -1,4 +1,3 @@
-import { getManagerUsers } from "../dao/daoManager.js"
 
 const data = await getManagerUsers()
 
